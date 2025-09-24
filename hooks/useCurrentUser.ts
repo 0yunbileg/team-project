@@ -15,7 +15,11 @@ export interface Pet {
 }
 
 export interface User {
-  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  jobTitle: string;
+  goals: string[];
   password: string;
   points: number;
   tasks: Task[];
@@ -27,11 +31,11 @@ export function useCurrentUser() {
 
   // Load user from localStorage
   useEffect(() => {
-    const currentUsername = localStorage.getItem("currentUser");
-    if (!currentUsername) return;
+    const currentEmail = localStorage.getItem("currentUser");
+    if (!currentEmail) return;
 
     const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    const foundUser = users.find((u) => u.username === currentUsername);
+    const foundUser = users.find((u) => u.email === currentEmail);
 
     if (foundUser) {
       setUser(foundUser);
@@ -42,7 +46,7 @@ export function useCurrentUser() {
   const updateUser = (updatedUser: User) => {
     const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
     const newUsers = users.map((u) =>
-      u.username === updatedUser.username ? updatedUser : u
+      u.email === updatedUser.email ? updatedUser : u
     );
     localStorage.setItem("users", JSON.stringify(newUsers));
     setUser(updatedUser);

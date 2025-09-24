@@ -18,7 +18,7 @@ export default function HomePage() {
 
   if (checking) {
     return (
-      <div className='h-screen flex items-center justify-center bg-black text-white'>
+      <div className='bg-gradient-to-r from-blue-900 to-purple-800 min-h-screen flex items-center justify-center bg-black text-white'>
         Loading...
       </div>
     )
