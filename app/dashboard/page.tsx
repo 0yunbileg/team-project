@@ -25,7 +25,7 @@ export default function DashboardPage() {
 
   return (
     <ProtectedRoute>
-      <div className="bg-gradient-to-r from-blue-900 to-purple-800 min-h-screen text-white p-8 flex flex-col gap-8">
+      <div className="bg-gradient-to-r from-blue-900 to-purple-800 min-h-screen p-8 flex flex-col gap-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center">
           <h1 className="text-3xl font-bold">
@@ -40,7 +40,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Points Section */}
-        <div className="bg-white bg-opacity-10 rounded p-6 max-w-md">
+        <div className="bg-white text-black bg-opacity-10 rounded p-6 max-w-md">
           <p className="mb-4 text-lg">
             You have <span className="font-bold">{user.points}</span> points.
           </p>
@@ -60,7 +60,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Pet Stats */}
-        <div className="max-w-md mt-4 bg-white bg-opacity-10 p-4 rounded">
+        <div className="text-black max-w-md mt-4 bg-white bg-opacity-10 p-4 rounded">
           <h2 className="text-xl font-semibold mb-2">Pet Stats 🐾</h2>
           <p>Hunger: {user.pet.hunger}%</p>
           <p>Happiness: {user.pet.happiness}%</p>

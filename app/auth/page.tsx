@@ -11,7 +11,7 @@ interface User {
   password: string;
   points: number;
   tasks: { id: number; title: string; done: boolean }[];
-  pet: { hunger: number; happiness: number; energy: number };
+  pet: { name: string; hunger: number; happiness: number; energy: number };
 }
 
 const JOB_OPTIONS = ["Student", "Worker", "Freelancer", "Other"];
@@ -29,6 +29,8 @@ export default function AuthPage() {
 
   const [goals, setGoals] = useState<string[]>([]);
   const [customGoal, setCustomGoal] = useState("");
+
+  const [petName, setPetName] = useState("Fluffy");
 
   const [error, setError] = useState("");
 
@@ -61,7 +63,7 @@ export default function AuthPage() {
         password,
         points: 10,
         tasks: [],
-        pet: { hunger: 100, happiness: 100, energy: 100 },
+        pet: { name: petName, hunger: 100, happiness: 100, energy: 100 },
       };
 
       users.push(newUser);
@@ -123,6 +125,14 @@ export default function AuthPage() {
 
       {isRegister && (
         <>
+          <input
+            type="string"
+            placeholder="Pet Name"
+            value={petName}
+            onChange={(e) => setPetName(e.target.value)}
+            className="mb-3 p-2 rounded text-black w-full"
+            required
+          />
           <select
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}

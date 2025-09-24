@@ -7,7 +7,8 @@ import { useCurrentUser } from "@/hooks/useCurrentUser"
 export default function FocusPage() {
     const { user, updateUser } = useCurrentUser()
 
-    const [time, setTime] = useState(25 * 60); // 25 minutes in seconds
+    const [minutes, setMinutes] = useState(25);
+    const [time, setTime] = useState(minutes * 60);
     const [status, setStatus] = useState<
         "idle" | "focus" | "paused" | "done"
     >("idle");
@@ -51,7 +52,7 @@ export default function FocusPage() {
         clearInterval(timerRef.current!);
         timerRef.current = null;
         setStatus("idle");
-        setTime(25 * 60);
+        setTime(minutes * 60);
     };
 
     // Pet reactions
@@ -73,6 +74,22 @@ export default function FocusPage() {
     return (
         <ProtectedRoute>
             <div className="flex flex-col items-center p-6 bg-gray-50 min-h-screen">
+                <div>
+                    <input
+                        type="number"
+                        placeholder="Minutes"
+                        value={minutes}
+                        onChange={(e) => setMinutes(Number(e.target.value))}
+                        className="mb-3 p-2 rounded text-black w-full"
+                        required
+                    />
+                    <button
+                        onClick={() => { setTime(minutes * 60); resetTimer(); }}
+                        className="mb-6 px-4 py-2 bg-blue-500 rounded-lg"
+                    >
+                        Set Timer
+                    </button>
+                </div>
                 {/* Timer */}
                 <div className="w-48 h-48 rounded-full border-8 border-indigo-500 flex items-center justify-center text-4xl font-bold text-gray-800">
                     {String(Math.floor(time / 60)).padStart(2, "0")}:
@@ -82,7 +99,7 @@ export default function FocusPage() {
                 {/* Controls */}
                 <div className="mt-4 space-x-4">
                     <button
-                        onClick={() => {if (status === "idle" || status === "paused") setStatus("focus"); else if (status === "focus") setStatus("paused");}}
+                        onClick={() => { if (status === "idle" || status === "paused") setStatus("focus"); else if (status === "focus") setStatus("paused"); }}
                         className="px-4 py-2 text-white rounded-lg"
                         style={{ backgroundColor: status === "focus" ? "yellow" : status === "paused" ? "green" : "blue" }}
                     >
