@@ -11,7 +11,15 @@ export function KPICards({
   currentStreak: number;
   tasksDone: number;
 }) {
-  const Item = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number }) => (
+  const Item = ({
+    icon,
+    label,
+    value,
+  }: {
+    icon: React.ReactNode;
+    label: string;
+    value: string | number;
+  }) => (
     <div className="card-blur rounded-xl p-4 flex items-center gap-3">
       <div className="p-2 rounded-lg bg-black/5 dark:bg-white/10">{icon}</div>
       <div>
@@ -22,9 +30,21 @@ export function KPICards({
   );
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <Item icon={<Trophy size={18} />} label="Goals completed" value={goalsCompleted} />
-      <Item icon={<Flame size={18} />} label="Best streak" value={`${currentStreak} days`} />
-      <Item icon={<CheckCircle2 size={18} />} label="Tasks done" value={tasksDone} />
+      <Item
+        icon={<Trophy size={18} />}
+        label="Goals completed"
+        value={goalsCompleted}
+      />
+      <Item
+        icon={<Flame size={18} />}
+        label="Best streak"
+        value={`${currentStreak} days`}
+      />
+      <Item
+        icon={<CheckCircle2 size={18} />}
+        label="Tasks done"
+        value={tasksDone}
+      />
     </div>
   );
 }

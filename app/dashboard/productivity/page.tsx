@@ -9,31 +9,56 @@ import { Tasks } from "@/components/dashboard/Tasks";
 import { Charts } from "@/components/dashboard/Charts";
 import { DashboardData } from "@/lib/types";
 import { loadData } from "@/lib/storage";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function Home() {
-  const [data, setData] = useState<DashboardData>({ goals: [], habits: [], tasks: [] });
+  const [data, setData] = useState<DashboardData>({
+    goals: [],
+    habits: [],
+    tasks: [],
+  });
+  const { user, updateUser } = useCurrentUser();
 
   useEffect(() => {
     setData(loadData());
   }, []);
 
-  const goalsCompleted = data.goals.filter((g) => g.progress >= g.target).length;
+  if (!user) {
+    return (
+      <ProtectedRoute>
+        <p className="text-white">Loading user data...</p>
+      </ProtectedRoute>
+    );
+  }
+
+  const goalsCompleted = data.goals.filter(
+    (g) => g.progress >= g.target
+  ).length;
   const bestStreak = Math.max(0, ...data.habits.map((h) => h.streak));
-  const tasksDone = data.tasks.filter((t) => t.completed).length;
+  const tasksDone = user.tasks.filter((t) => t.completed).length;
 
   return (
     <div className="min-h-screen px-6 py-8 sm:px-10 sm:py-12 text-foreground">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold gradient-text">Productivity Dashboard</h1>
-          <p className="text-sm text-black/60 dark:text-white/60">Track goals, habits, and tasks</p>
+          <h1 className="text-2xl sm:text-3xl font-semibold gradient-text">
+            Productivity Dashboard
+          </h1>
+          <p className="text-sm text-black/60 dark:text-white/60">
+            Track goals, habits, and tasks
+          </p>
         </div>
         <ThemeToggle />
       </div>
 
       <div className="mt-6">
-        <KPICards goalsCompleted={goalsCompleted} currentStreak={bestStreak} tasksDone={tasksDone} />
+        <KPICards
+          goalsCompleted={goalsCompleted}
+          currentStreak={bestStreak}
+          tasksDone={tasksDone}
+        />
       </div>
 
       <div className="mt-6">
@@ -48,7 +73,7 @@ export default function Home() {
           <Habits habits={data.habits} />
         </div>
         <div className="lg:col-span-1">
-          <Tasks tasks={data.tasks} />
+          <Tasks tasks={user.tasks} />
         </div>
       </div>
     </div>

@@ -10,12 +10,17 @@ interface User {
   goals: string[];
   password: string;
   points: number;
-  tasks: { id: number; title: string; done: boolean }[];
+  tasks: { id: number; priority: string; title: string; done: boolean }[];
   pet: { name: string; hunger: number; happiness: number; energy: number };
 }
 
 const JOB_OPTIONS = ["Student", "Worker", "Freelancer", "Other"];
-const GOAL_OPTIONS = ["Focus more", "Phone addiction", "Time management", "Other"];
+const GOAL_OPTIONS = [
+  "Focus more",
+  "Phone addiction",
+  "Time management",
+  "Other",
+];
 
 export default function AuthPage() {
   const [isRegister, setIsRegister] = useState(false);
@@ -71,7 +76,9 @@ export default function AuthPage() {
       localStorage.setItem("currentUser", email);
       window.location.href = "/dashboard";
     } else {
-      const user = users.find((u) => u.email === email && u.password === password);
+      const user = users.find(
+        (u) => u.email === email && u.password === password
+      );
       if (!user) {
         setError("Invalid email or password");
         return;
@@ -83,7 +90,9 @@ export default function AuthPage() {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-purple-700 to-blue-800 text-white p-6">
-      <h1 className="text-3xl font-bold mb-6">{isRegister ? "Register" : "Login"}</h1>
+      <h1 className="text-3xl font-bold mb-6">
+        {isRegister ? "Register" : "Login"}
+      </h1>
 
       {isRegister && (
         <>

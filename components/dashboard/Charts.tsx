@@ -1,18 +1,41 @@
 "use client";
 
-import { ResponsiveContainer, AreaChart, Area, Tooltip, XAxis, YAxis, LineChart, Line } from "recharts";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  Tooltip,
+  XAxis,
+  YAxis,
+  LineChart,
+  Line,
+} from "recharts";
+import { useCurrentUser, Task } from "@/hooks/useCurrentUser";
 
-const weekly = [
-  { d: "Mon", habits: 3, tasks: 5 },
-  { d: "Tue", habits: 2, tasks: 6 },
-  { d: "Wed", habits: 4, tasks: 4 },
-  { d: "Thu", habits: 5, tasks: 7 },
-  { d: "Fri", habits: 4, tasks: 5 },
-  { d: "Sat", habits: 3, tasks: 3 },
-  { d: "Sun", habits: 2, tasks: 4 },
-];
+// Helper to get day of week string from a date (0=Sun, 1=Mon, ...)
+const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function getWeeklyTaskData(tasks: Task[]) {
+  // Initialize counts for each day
+  const week = dayNames.map((d) => ({ d, tasks: 0, habits: 0 }));
+  // If no 'due' property, distribute by id for demo
+  tasks.forEach((task: Task) => {
+    if (task.completed) {
+      // Spread tasks across days using id for demo
+      const day = typeof task.id === "number" ? task.id % 7 : 0;
+      week[day].tasks++;
+    }
+  });
+  return week;
+}
 
 export function Charts() {
+  const { user } = useCurrentUser();
+  // Fallback to empty array if user or user.tasks is not loaded
+  const weekly =
+    user && user.tasks
+      ? getWeeklyTaskData(user.tasks)
+      : dayNames.map((d) => ({ d, tasks: 0, habits: 0 }));
   return (
     <div className="card-blur rounded-xl p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div className="h-56">
@@ -25,10 +48,23 @@ export function Charts() {
                 <stop offset="100%" stopColor="#a78bfa" stopOpacity={0.1} />
               </linearGradient>
             </defs>
-            <XAxis dataKey="d" tickLine={false} axisLine={false} tick={{ fill: "currentColor", fontSize: 12 }} />
+            <XAxis
+              dataKey="d"
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: "currentColor", fontSize: 12 }}
+            />
             <YAxis hide />
-            <Tooltip cursor={{ stroke: "#fff", strokeOpacity: 0.1 }} contentStyle={{ background: "#111827", border: "none" }} />
-            <Area type="monotone" dataKey="habits" stroke="#a78bfa" fill="url(#grad1)" />
+            <Tooltip
+              cursor={{ stroke: "#fff", strokeOpacity: 0.1 }}
+              contentStyle={{ background: "#111827", border: "none" }}
+            />
+            <Area
+              type="monotone"
+              dataKey="habits"
+              stroke="#a78bfa"
+              fill="url(#grad1)"
+            />
           </AreaChart>
         </ResponsiveContainer>
       </div>
@@ -36,10 +72,24 @@ export function Charts() {
         <h3 className="font-semibold mb-2">Tasks completed</h3>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={weekly}>
-            <XAxis dataKey="d" tickLine={false} axisLine={false} tick={{ fill: "currentColor", fontSize: 12 }} />
+            <XAxis
+              dataKey="d"
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: "currentColor", fontSize: 12 }}
+            />
             <YAxis hide />
-            <Tooltip cursor={{ stroke: "#fff", strokeOpacity: 0.1 }} contentStyle={{ background: "#111827", border: "none" }} />
-            <Line type="monotone" dataKey="tasks" stroke="#22d3ee" strokeWidth={2} dot={false} />
+            <Tooltip
+              cursor={{ stroke: "#fff", strokeOpacity: 0.1 }}
+              contentStyle={{ background: "#111827", border: "none" }}
+            />
+            <Line
+              type="monotone"
+              dataKey="tasks"
+              stroke="#22d3ee"
+              strokeWidth={2}
+              dot={false}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>

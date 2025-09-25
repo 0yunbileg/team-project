@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 export interface Task {
   id: number;
   title: string;
-  done: boolean;
+  completed: boolean;
+  priority: string;
 }
 
 export interface Pet {
