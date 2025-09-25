@@ -35,6 +35,7 @@ function AuthPage() {
     const [customJob, setCustomJob] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [goals, setGoals] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [customGoal, setCustomGoal] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [petName, setPetName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("Fluffy");
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const toggleGoal = (goal)=>{
         setGoals((prev)=>prev.includes(goal) ? prev.filter((g)=>g !== goal) : [
@@ -64,6 +65,7 @@ function AuthPage() {
                 points: 10,
                 tasks: [],
                 pet: {
+                    name: petName,
                     hunger: 100,
                     happiness: 100,
                     energy: 100
@@ -91,7 +93,7 @@ function AuthPage() {
                 children: isRegister ? "Register" : "Login"
             }, void 0, false, {
                 fileName: "[project]/app/auth/page.tsx",
-                lineNumber: 84,
+                lineNumber: 86,
                 columnNumber: 7
             }, this),
             isRegister && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -105,7 +107,7 @@ function AuthPage() {
                         required: true
                     }, void 0, false, {
                         fileName: "[project]/app/auth/page.tsx",
-                        lineNumber: 88,
+                        lineNumber: 90,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -117,7 +119,7 @@ function AuthPage() {
                         required: true
                     }, void 0, false, {
                         fileName: "[project]/app/auth/page.tsx",
-                        lineNumber: 96,
+                        lineNumber: 98,
                         columnNumber: 11
                     }, this)
                 ]
@@ -131,7 +133,7 @@ function AuthPage() {
                 required: true
             }, void 0, false, {
                 fileName: "[project]/app/auth/page.tsx",
-                lineNumber: 107,
+                lineNumber: 109,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -143,11 +145,23 @@ function AuthPage() {
                 required: true
             }, void 0, false, {
                 fileName: "[project]/app/auth/page.tsx",
-                lineNumber: 115,
+                lineNumber: 117,
                 columnNumber: 7
             }, this),
             isRegister && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                 children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                        type: "string",
+                        placeholder: "Pet Name",
+                        value: petName,
+                        onChange: (e)=>setPetName(e.target.value),
+                        className: "mb-3 p-2 rounded text-black w-full",
+                        required: true
+                    }, void 0, false, {
+                        fileName: "[project]/app/auth/page.tsx",
+                        lineNumber: 128,
+                        columnNumber: 11
+                    }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                         value: jobTitle,
                         onChange: (e)=>setJobTitle(e.target.value),
@@ -159,7 +173,7 @@ function AuthPage() {
                                 children: "Select Job Title"
                             }, void 0, false, {
                                 fileName: "[project]/app/auth/page.tsx",
-                                lineNumber: 132,
+                                lineNumber: 142,
                                 columnNumber: 13
                             }, this),
                             JOB_OPTIONS.map((job)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -167,13 +181,13 @@ function AuthPage() {
                                     children: job
                                 }, job, false, {
                                     fileName: "[project]/app/auth/page.tsx",
-                                    lineNumber: 134,
+                                    lineNumber: 144,
                                     columnNumber: 15
                                 }, this))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/auth/page.tsx",
-                        lineNumber: 126,
+                        lineNumber: 136,
                         columnNumber: 11
                     }, this),
                     jobTitle === "Other" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -185,7 +199,7 @@ function AuthPage() {
                         required: true
                     }, void 0, false, {
                         fileName: "[project]/app/auth/page.tsx",
-                        lineNumber: 140,
+                        lineNumber: 150,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -196,7 +210,7 @@ function AuthPage() {
                                 children: "Goals:"
                             }, void 0, false, {
                                 fileName: "[project]/app/auth/page.tsx",
-                                lineNumber: 151,
+                                lineNumber: 161,
                                 columnNumber: 13
                             }, this),
                             GOAL_OPTIONS.map((goal)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -209,14 +223,14 @@ function AuthPage() {
                                             className: "mr-2"
                                         }, void 0, false, {
                                             fileName: "[project]/app/auth/page.tsx",
-                                            lineNumber: 154,
+                                            lineNumber: 164,
                                             columnNumber: 17
                                         }, this),
                                         goal
                                     ]
                                 }, goal, true, {
                                     fileName: "[project]/app/auth/page.tsx",
-                                    lineNumber: 153,
+                                    lineNumber: 163,
                                     columnNumber: 15
                                 }, this)),
                             goals.includes("Other") && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -228,13 +242,13 @@ function AuthPage() {
                                 required: true
                             }, void 0, false, {
                                 fileName: "[project]/app/auth/page.tsx",
-                                lineNumber: 164,
+                                lineNumber: 174,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/auth/page.tsx",
-                        lineNumber: 150,
+                        lineNumber: 160,
                         columnNumber: 11
                     }, this)
                 ]
@@ -244,7 +258,7 @@ function AuthPage() {
                 children: error
             }, void 0, false, {
                 fileName: "[project]/app/auth/page.tsx",
-                lineNumber: 177,
+                lineNumber: 187,
                 columnNumber: 17
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -253,7 +267,7 @@ function AuthPage() {
                 children: isRegister ? "Register" : "Login"
             }, void 0, false, {
                 fileName: "[project]/app/auth/page.tsx",
-                lineNumber: 179,
+                lineNumber: 189,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -270,23 +284,23 @@ function AuthPage() {
                         children: isRegister ? "Login here" : "Register here"
                     }, void 0, false, {
                         fileName: "[project]/app/auth/page.tsx",
-                        lineNumber: 188,
+                        lineNumber: 198,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/auth/page.tsx",
-                lineNumber: 186,
+                lineNumber: 196,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/auth/page.tsx",
-        lineNumber: 83,
+        lineNumber: 85,
         columnNumber: 5
     }, this);
 }
-_s(AuthPage, "h2PKdLVkQQ3lEMnkbZv6i5l3mcg=");
+_s(AuthPage, "3YM8woZMLX52BIQ3qOyqSZ5ZYkw=");
 _c = AuthPage;
 var _c;
 __turbopack_context__.k.register(_c, "AuthPage");

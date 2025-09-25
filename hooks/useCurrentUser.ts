@@ -9,6 +9,7 @@ export interface Task {
 }
 
 export interface Pet {
+  name: string;
   hunger: number;
   happiness: number;
   energy: number;
