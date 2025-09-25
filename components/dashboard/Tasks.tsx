@@ -3,22 +3,31 @@
 import { Check, Plus } from "lucide-react";
 import { Task } from "@/lib/types";
 import { useState } from "react";
+import { loadData, saveData } from "@/lib/storage";
 
 export function Tasks({ tasks: initial }: { tasks: Task[] }) {
   const [tasks, setTasks] = useState(initial);
   const [title, setTitle] = useState("");
 
   function toggle(id: string) {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
+    setTasks((prev) => {
+      const next = prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t));
+      const data = loadData();
+      saveData({ ...data, tasks: next });
+      return next;
+    });
   }
 
   function add() {
     const t = title.trim();
     if (!t) return;
-    setTasks((prev) => [
-      { id: Math.random().toString(36).slice(2), title: t, priority: "medium", completed: false },
-      ...prev,
-    ]);
+    setTasks((prev) => {
+      const created = { id: Math.random().toString(36).slice(2), title: t, priority: "medium", completed: false } as Task;
+      const next = [created, ...prev];
+      const data = loadData();
+      saveData({ ...data, tasks: next });
+      return next;
+    });
     setTitle("");
   }
 
