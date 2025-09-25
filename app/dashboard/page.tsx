@@ -2,9 +2,26 @@
 
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { KPICards } from "@/components/dashboard/KPICards";
+import { Goals } from "@/components/dashboard/Goals";
+import { Habits } from "@/components/dashboard/Habits";
+import { Tasks } from "@/components/dashboard/Tasks";
+import { Charts } from "@/components/dashboard/Charts";
+import { DashboardData } from "@/lib/types";
+import { loadData } from "@/lib/storage";
 
 export default function DashboardPage() {
   const { user, updateUser } = useCurrentUser();
+  const [data, setData] = useState<DashboardData>({
+    goals: [],
+    habits: [],
+    tasks: [],
+  });
+  useEffect(() => {
+    setData(loadData());
+  }, []);
 
   if (!user) {
     return (
@@ -14,57 +31,52 @@ export default function DashboardPage() {
     );
   }
 
-  const addPoints = (amount: number = 10) => {
-    updateUser({ ...user, points: user.points + amount });
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("currentUser");
-    window.location.href = "/";
-  };
+  const goalsCompleted = data.goals.filter(
+    (g) => g.progress >= g.target
+  ).length;
+  const bestStreak = Math.max(0, ...data.habits.map((h) => h.streak));
+  const tasksDone = data.tasks.filter((t) => t.completed).length;
 
   return (
     <ProtectedRoute>
-      <div className="bg-gradient-to-r from-blue-900 to-purple-800 min-h-screen p-8 flex flex-col gap-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <h1 className="text-3xl font-bold">
-            Welcome, {user.firstName} {user.lastName} 🎉
-          </h1>
-          <button
-            onClick={handleLogout}
-            className="mt-4 md:mt-0 bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition"
-          >
-            Logout
-          </button>
-        </div>
+      <div>
+        <div className="min-h-screen px-6 py-8 sm:px-10 sm:py-12 text-foreground">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-semibold gradient-text">
+                Productivity Dashboard
+              </h1>
+              <p className="text-sm text-black/60 dark:text-white/60">
+                Track goals, habits, and tasks
+              </p>
+            </div>
+            <ThemeToggle />
+          </div>
 
-        {/* Points Section */}
-        <div className="bg-white text-black bg-opacity-10 rounded p-6 max-w-md">
-          <p className="mb-4 text-lg">
-            You have <span className="font-bold">{user.points}</span> points.
-          </p>
-          <button
-            onClick={() => addPoints(10)}
-            className="bg-green-500 px-4 py-2 rounded hover:bg-green-600 transition"
-          >
-            +10 Points
-          </button>
-        </div>
+          <div className="mt-6">
+            <KPICards
+              goalsCompleted={goalsCompleted}
+              currentStreak={bestStreak}
+              tasksDone={tasksDone}
+            />
+          </div>
 
-        {/* User Info */}
-        <div className="max-w-md">
-          <h2 className="text-xl font-semibold mb-2">Your Info:</h2>
-          <p>Job Title: {user.jobTitle}</p>
-          {user.goals.length > 0 && <p>Goals: {user.goals.join(", ")}</p>}
-        </div>
+          <div className="mt-6">
+            <Charts />
+          </div>
 
-        {/* Pet Stats */}
-        <div className="text-black max-w-md mt-4 bg-white bg-opacity-10 p-4 rounded">
-          <h2 className="text-xl font-semibold mb-2">Pet Stats 🐾</h2>
-          <p>Hunger: {user.pet.hunger}%</p>
-          <p>Happiness: {user.pet.happiness}%</p>
-          <p>Energy: {user.pet.energy}%</p>
+          <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-1">
+              <Goals goals={data.goals} />
+            </div>
+            <div className="lg:col-span-1">
+              <Habits habits={data.habits} />
+            </div>
+            <div className="lg:col-span-1">
+              <Tasks tasks={data.tasks} />
+            </div>
+          </div>
         </div>
       </div>
     </ProtectedRoute>

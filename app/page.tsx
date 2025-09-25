@@ -1,42 +1,56 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { KPICards } from "@/components/dashboard/KPICards";
+import { Goals } from "@/components/dashboard/Goals";
+import { Habits } from "@/components/dashboard/Habits";
+import { Tasks } from "@/components/dashboard/Tasks";
+import { Charts } from "@/components/dashboard/Charts";
+import { DashboardData } from "@/lib/types";
+import { loadData } from "@/lib/storage";
 
-export default function HomePage() {
-  const router = useRouter()
-  const [checking, setChecking] = useState(true)
+export default function Home() {
+  const [data, setData] = useState<DashboardData>({ goals: [], habits: [], tasks: [] });
 
   useEffect(() => {
-    const currentUser = localStorage.getItem("currentUser")
-    if (currentUser) {
-      router.push("/dashboard") // skip landing if logged in
-    } else {
-      setChecking(false)
-    }
-  }, [router])
+    setData(loadData());
+  }, []);
 
-  if (checking) {
-    return (
-      <div className='bg-gradient-to-r from-blue-900 to-purple-800 min-h-screen flex items-center justify-center bg-black text-white'>
-        Loading...
-      </div>
-    )
-  }
+  const goalsCompleted = data.goals.filter((g) => g.progress >= g.target).length;
+  const bestStreak = Math.max(0, ...data.habits.map((h) => h.streak));
+  const tasksDone = data.tasks.filter((t) => t.completed).length;
 
   return (
-    <div className='h-screen flex flex-col items-center justify-center bg-gradient-to-r from-purple-800 to-blue-900 text-white'>
-      <h1 className='text-4xl font-bold mb-4'>Study Buddy 🐾</h1>
-      <p className='text-lg max-w-md text-center mb-8'>
-        Track your study time, build good habits, and take care of your own
-        virtual pet while staying productive!
-      </p>
-      <button
-        onClick={() => router.push("/auth")}
-        className='bg-white text-purple-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition'
-      >
-        Get Started
-      </button>
+    <div className="min-h-screen px-6 py-8 sm:px-10 sm:py-12 text-foreground">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-semibold gradient-text">Productivity Dashboard</h1>
+          <p className="text-sm text-black/60 dark:text-white/60">Track goals, habits, and tasks</p>
+        </div>
+        <ThemeToggle />
+      </div>
+
+      <div className="mt-6">
+        <KPICards goalsCompleted={goalsCompleted} currentStreak={bestStreak} tasksDone={tasksDone} />
+      </div>
+
+      <div className="mt-6">
+        <Charts />
+      </div>
+
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-1">
+          <Goals goals={data.goals} />
+        </div>
+        <div className="lg:col-span-1">
+          <Habits habits={data.habits} />
+        </div>
+        <div className="lg:col-span-1">
+          <Tasks tasks={data.tasks} />
+        </div>
+      </div>
     </div>
-  )
+  );
 }
