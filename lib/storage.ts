@@ -1,10 +1,22 @@
 "use client";
 
-import { DashboardData, MoodEntry, MediaData } from "./types";
+import { DashboardData, MoodEntry, MediaData, TimeLog, FeedbackEntry } from "./types";
 
-const KEY = "pdashboard:data:v1";
+const BASE_KEY = "pdashboard:data:v1";
 const MOOD_KEY = "pdashboard:mood:v1";
 const MEDIA_KEY = "pdashboard:media:v1";
+const LOG_KEY = "pdashboard:logs:v1";
+const FEEDBACK_KEY = "pdashboard:feedback:v1";
+
+function keyFor(base: string) {
+  if (typeof window === "undefined") return base;
+  try {
+    const email = localStorage.getItem("currentUser");
+    return email ? `${base}:${email}` : base;
+  } catch {
+    return base;
+  }
+}
 
 const demoData: DashboardData = {
   goals: [
@@ -27,7 +39,7 @@ const demoData: DashboardData = {
 export function loadData(): DashboardData {
   if (typeof window === "undefined") return demoData;
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(keyFor(BASE_KEY));
     return raw ? (JSON.parse(raw) as DashboardData) : demoData;
   } catch {
     return demoData;
@@ -37,7 +49,7 @@ export function loadData(): DashboardData {
 export function saveData(data: DashboardData) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(KEY, JSON.stringify(data));
+    localStorage.setItem(keyFor(BASE_KEY), JSON.stringify(data));
   } catch {}
 }
 
@@ -90,5 +102,41 @@ export function saveMediaData(data: MediaData) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(MEDIA_KEY, JSON.stringify(data));
+  } catch {}
+}
+
+// Time Logs storage (per-user)
+export function loadTimeLogs(): TimeLog[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(keyFor(LOG_KEY));
+    return raw ? (JSON.parse(raw) as TimeLog[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveTimeLogs(logs: TimeLog[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(keyFor(LOG_KEY), JSON.stringify(logs));
+  } catch {}
+}
+
+// Feedback storage (front-end only)
+export function loadFeedback(): FeedbackEntry[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(FEEDBACK_KEY);
+    return raw ? (JSON.parse(raw) as FeedbackEntry[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveFeedback(entries: FeedbackEntry[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(FEEDBACK_KEY, JSON.stringify(entries));
   } catch {}
 }

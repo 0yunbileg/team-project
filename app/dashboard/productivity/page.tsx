@@ -11,6 +11,7 @@ import { Charts } from "@/components/dashboard/Charts";
 import { Radials } from "@/components/dashboard/Radials";
 import { Heatmap } from "@/components/dashboard/Heatmap";
 import { Pomodoro } from "@/components/dashboard/Pomodoro";
+import { TimeLogView } from "@/components/dashboard/TimeLog";
 import { DashboardData } from "@/lib/types";
 import { loadData } from "@/lib/storage";
 import { Flame, Medal, Sparkles, ArrowRight, Plus, Target } from "lucide-react";
@@ -154,6 +155,10 @@ export default function Home() {
         <div>
           <Pomodoro />
         </div>
+      </div>
+
+      <div className="mt-6">
+        <TimeLogView />
       </div>
 
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">

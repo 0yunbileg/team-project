@@ -7,6 +7,7 @@ import { WeekStrip } from "@/components/mood/WeekStrip";
 import { Insights } from "@/components/mood/Insights";
 import { loadData, loadMoodEntries } from "@/lib/storage";
 import type { MoodEntry } from "@/lib/types";
+import { HeroCard } from "@/components/HeroCard";
 
 export default function MoodPage() {
   const [entries, setEntries] = useState<MoodEntry[]>([]);
@@ -35,13 +36,11 @@ export default function MoodPage() {
 
   return (
     <div className="min-h-screen px-6 py-8 sm:px-10 sm:py-12 text-foreground">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl sm:text-4xl font-semibold gradient-text">Mood Journal</h1>
-          <p className="text-sm text-black/60 dark:text-white/60">Daily habits + mood with correlation insights</p>
-        </div>
-        <ThemeToggle />
-      </div>
+      <HeroCard
+        title="Mood Journal"
+        subtitle="Daily habits + mood with correlation insights"
+        rightSlot={<ThemeToggle />}
+      />
 
       <div className="mt-6 grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2">

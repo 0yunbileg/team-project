@@ -1,9 +1,8 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/auth/page": "app/auth/page.js",
-  "/dashboard/focus/page": "app/dashboard/focus/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/productivity/page": "app/dashboard/productivity/page.js",
+  "/dashboard/checkin/page": "app/dashboard/checkin/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js"
+  "/feedback/page": "app/feedback/page.js",
+  "/goals/page": "app/goals/page.js",
+  "/page": "app/page.js",
+  "/progress/page": "app/progress/page.js"
 }

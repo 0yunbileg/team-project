@@ -3,6 +3,7 @@ export type Goal = {
   title: string;
   target: number; // e.g., 100 (percent) or units
   progress: number; // 0..target
+  targetDate?: string; // ISO date, optional
 };
 
 export type Habit = {
@@ -15,6 +16,8 @@ export type Habit = {
 export type Task = {
   id: string;
   title: string;
+  description?: string;
+  estimateMinutes?: number; // user's estimate for the task
   due?: string; // ISO date
   priority: "low" | "medium" | "high";
   completed: boolean;
@@ -24,6 +27,17 @@ export type DashboardData = {
   goals: Goal[];
   habits: Habit[];
   tasks: Task[];
+};
+
+// Time tracking
+export type TimeLog = {
+  id: string;
+  taskId?: string; // optional for ad-hoc focus with no task selected
+  taskTitle: string; // snapshot of the title when logged
+  estimateMinutes?: number; // snapshot of estimate at the time
+  startedAt: string; // ISO timestamp
+  endedAt: string; // ISO timestamp
+  actualSeconds: number; // duration in seconds
 };
 
 // Mood Journal types
@@ -67,4 +81,11 @@ export type Quote = {
 export type MediaData = {
   items: MediaItem[];
   quotes: Quote[];
+};
+
+// Feedback (front-end only)
+export type FeedbackEntry = {
+  id: string;
+  message: string;
+  createdAt: string; // ISO
 };

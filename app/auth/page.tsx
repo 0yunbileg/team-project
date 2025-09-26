@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { HeroCard } from "@/components/HeroCard";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface User {
   firstName: string;
@@ -69,7 +71,7 @@ export default function AuthPage() {
       users.push(newUser);
       localStorage.setItem("users", JSON.stringify(users));
       localStorage.setItem("currentUser", email);
-      window.location.href = "/dashboard";
+      window.location.href = "/dashboard/checkin";
     } else {
       const user = users.find((u) => u.email === email && u.password === password);
       if (!user) {
@@ -77,134 +79,182 @@ export default function AuthPage() {
         return;
       }
       localStorage.setItem("currentUser", email);
-      window.location.href = "/dashboard";
+      window.location.href = "/dashboard/checkin";
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-purple-700 to-blue-800 text-white p-6">
-      <h1 className="text-3xl font-bold mb-6">{isRegister ? "Register" : "Login"}</h1>
-
-      {isRegister && (
-        <>
-          <input
-            type="text"
-            placeholder="First Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="mb-3 p-2 rounded text-black w-full"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Last Name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="mb-3 p-2 rounded text-black w-full"
-            required
-          />
-        </>
-      )}
-
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="mb-3 p-2 rounded text-black w-full"
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="mb-3 p-2 rounded text-black w-full"
-        required
-      />
-
-      {isRegister && (
-        <>
-          <input
-            type="string"
-            placeholder="Pet Name"
-            value={petName}
-            onChange={(e) => setPetName(e.target.value)}
-            className="mb-3 p-2 rounded text-black w-full"
-            required
-          />
-          <select
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
-            className="mb-3 p-2 rounded text-black w-full"
-            required
-          >
-            <option value="">Select Job Title</option>
-            {JOB_OPTIONS.map((job) => (
-              <option key={job} value={job}>
-                {job}
-              </option>
-            ))}
-          </select>
-          {jobTitle === "Other" && (
-            <input
-              type="text"
-              placeholder="Enter your job title"
-              value={customJob}
-              onChange={(e) => setCustomJob(e.target.value)}
-              className="mb-3 p-2 rounded text-black w-full"
-              required
-            />
+    <div className="min-h-screen px-6 py-8 sm:px-10 sm:py-12 text-foreground flex justify-center items-center">
+      <HeroCard
+        title={isRegister ? "Create your account" : "Welcome back"}
+        subtitle={
+          isRegister
+            ? "A few details to personalize your experience"
+            : "Login to continue your progress"
+        }
+        rightSlot={<ThemeToggle />}
+      >
+        <div className="max-w-xl">
+          {isRegister && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs opacity-70">First name</label>
+                <input
+                  type="text"
+                  placeholder="Jane"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="mt-1 w-full rounded-md px-3 py-2 bg-black/5 dark:bg-white/10 outline-none"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-xs opacity-70">Last name</label>
+                <input
+                  type="text"
+                  placeholder="Doe"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="mt-1 w-full rounded-md px-3 py-2 bg-black/5 dark:bg-white/10 outline-none"
+                  required
+                />
+              </div>
+            </div>
           )}
 
-          <div className="mb-3">
-            <p className="mb-1">Goals:</p>
-            {GOAL_OPTIONS.map((goal) => (
-              <label key={goal} className="block">
-                <input
-                  type="checkbox"
-                  checked={goals.includes(goal)}
-                  onChange={() => toggleGoal(goal)}
-                  className="mr-2"
-                />
-                {goal}
-              </label>
-            ))}
-            {goals.includes("Other") && (
+          <div className="mt-3 grid grid-cols-1 gap-3">
+            <div>
+              <label className="text-xs opacity-70">Email</label>
               <input
-                type="text"
-                placeholder="Enter your goal"
-                value={customGoal}
-                onChange={(e) => setCustomGoal(e.target.value)}
-                className="mt-2 p-2 rounded text-black w-full"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1 w-full rounded-md px-3 py-2 bg-black/5 dark:bg-white/10 outline-none"
                 required
               />
-            )}
+            </div>
+            <div>
+              <label className="text-xs opacity-70">Password</label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-1 w-full rounded-md px-3 py-2 bg-black/5 dark:bg-white/10 outline-none"
+                required
+              />
+            </div>
           </div>
-        </>
-      )}
 
-      {error && <p className="text-red-300 mb-2">{error}</p>}
+          {isRegister && (
+            <div className="mt-3 grid grid-cols-1 gap-3">
+              <div>
+                <label className="text-xs opacity-70">Pet name</label>
+                <input
+                  type="text"
+                  placeholder="Fluffy"
+                  value={petName}
+                  onChange={(e) => setPetName(e.target.value)}
+                  className="mt-1 w-full rounded-md px-3 py-2 bg-black/5 dark:bg-white/10 outline-none"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-xs opacity-70">Job title</label>
+                <select
+                  value={jobTitle}
+                  onChange={(e) => setJobTitle(e.target.value)}
+                  className="mt-1 w-full rounded-md px-3 py-2 bg-black/5 dark:bg-white/10 outline-none"
+                  required
+                >
+                  <option value="">Select Job Title</option>
+                  {JOB_OPTIONS.map((job) => (
+                    <option key={job} value={job}>
+                      {job}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {jobTitle === "Other" && (
+                <div>
+                  <label className="text-xs opacity-70">Custom job title</label>
+                  <input
+                    type="text"
+                    placeholder="Enter your job title"
+                    value={customJob}
+                    onChange={(e) => setCustomJob(e.target.value)}
+                    className="mt-1 w-full rounded-md px-3 py-2 bg-black/5 dark:bg-white/10 outline-none"
+                    required
+                  />
+                </div>
+              )}
 
-      <button
-        onClick={handleSubmit}
-        className="bg-white text-purple-700 px-6 py-2 rounded-lg hover:bg-gray-200 transition w-full"
-      >
-        {isRegister ? "Register" : "Login"}
-      </button>
+              <div>
+                <div className="text-xs opacity-70 mb-1">Goals</div>
+                <div className="flex flex-wrap gap-2">
+                  {GOAL_OPTIONS.map((goal) => {
+                    const active = goals.includes(goal);
+                    return (
+                      <button
+                        key={goal}
+                        type="button"
+                        onClick={() => toggleGoal(goal)}
+                        className={
+                          "px-3 py-1.5 rounded-full text-sm transition " +
+                          (active
+                            ? "bg-violet-500/90 text-white"
+                            : "bg-black/5 dark:bg-white/10")
+                        }
+                      >
+                        {goal}
+                      </button>
+                    );
+                  })}
+                </div>
+                {goals.includes("Other") && (
+                  <input
+                    type="text"
+                    placeholder="Enter your goal"
+                    value={customGoal}
+                    onChange={(e) => setCustomGoal(e.target.value)}
+                    className="mt-2 w-full rounded-md px-3 py-2 bg-black/5 dark:bg-white/10 outline-none"
+                    required
+                  />
+                )}
+              </div>
+            </div>
+          )}
 
-      <p className="mt-4 text-sm">
-        {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}
-        <span
-          onClick={() => {
-            setIsRegister(!isRegister);
-            setError("");
-          }}
-          className="underline cursor-pointer"
-        >
-          {isRegister ? "Login here" : "Register here"}
-        </span>
-      </p>
+          {error && (
+            <div className="mt-3 text-sm text-red-500">
+              {error}
+            </div>
+          )}
+
+          <div className="mt-4 flex items-center gap-3">
+            <button
+              onClick={handleSubmit}
+              className="px-4 py-2 rounded-md bg-violet-500/90 text-white hover:opacity-90 transition"
+            >
+              {isRegister ? "Create account" : "Login"}
+            </button>
+            <div className="text-sm">
+              {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsRegister(!isRegister);
+                  setError("");
+                }}
+                className="underline"
+              >
+                {isRegister ? "Login here" : "Register here"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </HeroCard>
     </div>
   );
 }

@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Pause, Play, RotateCcw, Volume2, VolumeX, Bell } from "lucide-react";
+import { loadData, loadTimeLogs, saveTimeLogs } from "@/lib/storage";
+import type { Task, TimeLog } from "@/lib/types";
 
 export function Pomodoro({ defaultMinutes = 25 }: { defaultMinutes?: number }) {
   const [secondsLeft, setSecondsLeft] = useState(defaultMinutes * 60);
@@ -12,6 +14,10 @@ export function Pomodoro({ defaultMinutes = 25 }: { defaultMinutes?: number }) {
   const intervalRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const chimeRef = useRef<HTMLAudioElement | null>(null);
+  const unlockedRef = useRef(false);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [selectedTaskId, setSelectedTaskId] = useState<string>("");
+  const [workedSeconds, setWorkedSeconds] = useState(0);
 
   // Restore persisted audio prefs
   useEffect(() => {
@@ -23,10 +29,38 @@ export function Pomodoro({ defaultMinutes = 25 }: { defaultMinutes?: number }) {
     } catch {}
   }, []);
 
+  function refreshTasks() {
+    const data = loadData();
+    const active = data.tasks.filter((t) => !t.completed);
+    setTasks(active);
+    if (selectedTaskId && !active.find((t) => t.id === selectedTaskId)) {
+      setSelectedTaskId("");
+    }
+  }
+
+  useEffect(() => {
+    // initial load
+    refreshTasks();
+    // update on storage changes from other tabs
+    const onStorage = (e: StorageEvent) => {
+      // any change may affect tasks due to per-user namespacing; refresh optimistically
+      refreshTasks();
+    };
+    // also refresh when window gains focus (same-tab updates elsewhere)
+    const onFocus = () => refreshTasks();
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("focus", onFocus);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [selectedTaskId]);
+
   useEffect(() => {
     if (!running) return;
     intervalRef.current = window.setInterval(() => {
       setSecondsLeft((s) => (s > 0 ? s - 1 : 0));
+      setWorkedSeconds((w) => w + 1);
     }, 1000);
     return () => {
       if (intervalRef.current) window.clearInterval(intervalRef.current);
@@ -47,6 +81,9 @@ export function Pomodoro({ defaultMinutes = 25 }: { defaultMinutes?: number }) {
         chimeRef.current.volume = 0.6;
         chimeRef.current.play().catch(() => {});
       }
+      // persist time log
+      persistTimeLog();
+      setWorkedSeconds(0);
     }
   }, [secondsLeft]);
 
@@ -74,16 +111,69 @@ export function Pomodoro({ defaultMinutes = 25 }: { defaultMinutes?: number }) {
     } catch {}
   }, [muted, volume]);
 
+  // Attempt to unlock audio on first interaction (helps Safari/iOS)
+  function ensureAudioUnlocked() {
+    if (unlockedRef.current) return;
+    const el = audioRef.current;
+    if (!el) return;
+    const prevMuted = el.muted;
+    el.muted = true;
+    el.play()
+      .then(() => {
+        el.pause();
+        el.currentTime = 0;
+        el.muted = prevMuted;
+        unlockedRef.current = true;
+      })
+      .catch(() => {
+        // ignore
+      });
+  }
+
   function toggle() {
-    setRunning((r) => !r);
+    // Ensure audio is user-unlocked on first click
+    ensureAudioUnlocked();
+    setRunning((r) => {
+      const next = !r;
+      // If starting, proactively start background audio
+      if (next && audioRef.current && !muted && secondsLeft > 0) {
+        audioRef.current.play().catch(() => {});
+      }
+      return next;
+    });
   }
   function reset() {
     setRunning(false);
     setSecondsLeft(defaultMinutes * 60);
+    // Save a partial session if any work was done
+    if (workedSeconds > 0) {
+      persistTimeLog();
+    }
+    setWorkedSeconds(0);
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
+  }
+
+  function persistTimeLog() {
+    try {
+      const logs = loadTimeLogs();
+      const data = loadData();
+      const task = data.tasks.find((t) => t.id === selectedTaskId);
+      const now = new Date();
+      const startedAt = new Date(now.getTime() - workedSeconds * 1000);
+      const log: TimeLog = {
+        id: Math.random().toString(36).slice(2),
+        taskId: task?.id,
+        taskTitle: task?.title || "Unlinked focus",
+        estimateMinutes: task?.estimateMinutes,
+        startedAt: startedAt.toISOString(),
+        endedAt: now.toISOString(),
+        actualSeconds: workedSeconds,
+      };
+      saveTimeLogs([log, ...logs]);
+    } catch {}
   }
 
   const m = Math.floor(secondsLeft / 60).toString().padStart(2, "0");
@@ -138,6 +228,17 @@ export function Pomodoro({ defaultMinutes = 25 }: { defaultMinutes?: number }) {
           </div>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
+          <select
+            className="rounded-lg px-2 py-2 bg-black/5 dark:bg-white/10 text-sm"
+            value={selectedTaskId}
+            onChange={(e) => setSelectedTaskId(e.target.value)}
+            title="Link an active task"
+          >
+            <option value="">Link task (optional)</option>
+            {tasks.map((t) => (
+              <option key={t.id} value={t.id}>{t.title}</option>
+            ))}
+          </select>
           <button onClick={toggle} className="rounded-lg px-3 py-2 bg-violet-500/90 text-white text-sm flex items-center gap-2">
             <AnimatePresence initial={false} mode="wait">
               {running ? (
@@ -153,6 +254,21 @@ export function Pomodoro({ defaultMinutes = 25 }: { defaultMinutes?: number }) {
           </button>
           <button onClick={reset} className="rounded-lg px-3 py-2 bg-black/5 dark:bg-white/10 text-sm flex items-center gap-2">
             <RotateCcw size={14} /> Reset
+          </button>
+          <button
+            onClick={() => {
+              ensureAudioUnlocked();
+              if (chimeRef.current) {
+                chimeRef.current.currentTime = 0;
+                chimeRef.current.volume = 0.6;
+                chimeRef.current.play().catch(() => {});
+              }
+            }}
+            className="rounded-lg px-3 py-2 bg-black/5 dark:bg-white/10 text-sm flex items-center gap-2"
+            title="Play test chime"
+            aria-label="Play test chime"
+          >
+            <Bell size={14} /> Test chime
           </button>
           <div className="flex items-center gap-2 text-xs">
             {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
