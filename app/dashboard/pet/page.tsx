@@ -14,8 +14,10 @@ export default function PetPage() {
   }
 
   const feedPet = () => {
+    console.log("Feeding pet...");
     if (user.points < 10) return; // not enough points
 
+    console.log("Feeding pet...1");
     const updatedUser: User = {
       ...user,
       points: user.points - 10,
@@ -26,6 +28,8 @@ export default function PetPage() {
     };
 
     updateUser(updatedUser);
+
+    console.log("Feeding pet, updated user:", updatedUser);
   };
 
   const playWithPet = () => {
