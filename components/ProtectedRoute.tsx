@@ -1,33 +1,36 @@
-"use client"
+"use client";
 
-import { useEffect, useState, ReactNode } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useState, ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { usePetManager } from "@/hooks/usePetManager";
 
 interface ProtectedRouteProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(true)
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  usePetManager(); // ✅ always called, top level
 
   useEffect(() => {
-    const currentUser = localStorage.getItem("currentUser")
+    const currentUser = localStorage.getItem("currentUser");
 
     if (!currentUser) {
-      router.push("/auth") // if not logged in → redirect
+      router.push("/auth"); // if not logged in → redirect
     } else {
-      setLoading(false) // allow rendering
+      setLoading(false); // allow rendering
     }
-  }, [router])
+  }, [router]);
 
   if (loading) {
     return (
-      <div className='h-screen flex items-center justify-center text-white bg-black'>
+      <div className="h-screen flex items-center justify-center text-white bg-black">
         Loading...
       </div>
-    )
+    );
   }
 
-  return <>{children}</>
+  return <>{children}</>;
 }

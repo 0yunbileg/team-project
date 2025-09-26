@@ -2,6 +2,7 @@
 
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { redirect } from "next/navigation";
 
 export default function DashboardPage() {
   const { user, updateUser } = useCurrentUser();
@@ -14,9 +15,5 @@ export default function DashboardPage() {
     );
   }
 
-  return (
-    <ProtectedRoute>
-      <div>home</div>
-    </ProtectedRoute>
-  );
+  redirect("/dashboard/profile");
 }
