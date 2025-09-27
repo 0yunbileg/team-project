@@ -83,3 +83,98 @@ body {
 .animate-bounce-slow {
   animation: bounce-slow 1.5s infinite;
 }
+
+/* Smooth scroll behavior globally */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Page and header entrance animations */
+@keyframes page-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: page-fade-in 420ms ease-out both;
+}
+
+@keyframes slide-down-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header-enter {
+  animation: slide-down-fade 360ms ease-out both;
+}
+
+/* Link underline reveal */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 6px;
+  height: 2px;
+  background: color-mix(in oklab, var(--foreground) 24%, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms ease;
+  border-radius: 999px;
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* Brand pulse for the gradient dot */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.5); }
+  50% { box-shadow: 0 0 16px 4px rgba(56, 189, 248, 0.35); }
+}
+.brand-pulse {
+  animation: pulse-glow 2.2s ease-in-out infinite;
+}
+
+/* Subtle card hover lift */
+.card-hover {
+  transition: transform 260ms ease, box-shadow 260ms ease, background 260ms ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+}
+
+/* Loading skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -450px 0; }
+  100% { background-position: 450px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, rgba(0,0,0,0.06) 25%, rgba(0,0,0,0.12) 37%, rgba(0,0,0,0.06) 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.2s infinite linear;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

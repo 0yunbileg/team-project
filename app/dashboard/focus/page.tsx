@@ -46,7 +46,7 @@ export default function FocusPage() {
     const fullMinutes = Math.floor(secondsFocused / 60);
     if (fullMinutes > 0) {
       updateUser({ ...user, points: user.points + fullMinutes });
-      setSecondsFocused(secondsFocused % 60); // reset counter
+      setSecondsFocused(secondsFocused % 60);
     }
   }, [secondsFocused, user, updateUser]);
 
@@ -81,7 +81,7 @@ export default function FocusPage() {
       case "done":
         return {
           img: "/images/pet-excited.png",
-          msg: `You did it! +${Math.floor(secondsFocused / 60)} XP 🎉`,
+          msg: `You did it! 🎉`,
         };
       default:
         return {
@@ -93,59 +93,64 @@ export default function FocusPage() {
 
   const pet = petState();
 
+  const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+  const seconds = String(secondsLeft % 60).padStart(2, "0");
+
   return (
     <ProtectedRoute>
-      <div className="flex flex-col items-center p-6 bg-gray-50 min-h-screen">
+      <div className="flex flex-col items-center justify-center p-6 bg-black min-h-screen text-white">s
         {/* Timer or input */}
         {status === "idle" ? (
-          <div className="mb-4">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-lg flex flex-col items-center">
             <input
               type="number"
               min={1}
               placeholder="Minutes"
               value={minutesInput}
               onChange={(e) => setMinutesInput(Number(e.target.value))}
-              className="mb-3 p-2 rounded text-black w-full"
+              className="mb-4 p-2 rounded-lg text-white w-24 text-center"
             />
             <button
               onClick={() => {
                 setSecondsLeft(minutesInput * 60);
                 setStatus("focus");
               }}
-              className="mb-6 px-4 py-2 bg-blue-500 rounded-lg text-white"
+              className="px-6 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg shadow-md font-medium hover:opacity-90 transition"
             >
               Start
             </button>
           </div>
         ) : (
-          <div className="w-48 h-48 rounded-full border-8 border-indigo-500 flex items-center justify-center text-4xl font-bold text-gray-800 mb-4">
-            {String(Math.floor(secondsLeft / 60)).padStart(2, "0")}:
-            {String(secondsLeft % 60).padStart(2, "0")}
+          <div className="relative w-56 h-56 mb-6">
+            {/* Gradient ring */}
+            <div className="absolute inset-0 rounded-full border-[12px] border-transparent border-t-indigo-400 border-r-purple-500 animate-spin-slow"></div>
+            {/* Timer text */}
+            <div className="absolute inset-0 flex items-center justify-center text-4xl font-bold bg-black/40 rounded-full">
+              {minutes}:{seconds}
+            </div>
           </div>
         )}
 
         {/* Controls */}
         {status !== "idle" && (
-          <div className="mt-4 space-x-4">
-            <button
-              onClick={() => setStatus(status === "focus" ? "paused" : "focus")}
-              className="px-4 py-2 text-white rounded-lg"
-              style={{
-                backgroundColor:
+          <div className="flex gap-4 mb-6">
+            {status !== "done" && (
+              <button
+                onClick={() =>
+                  setStatus(status === "focus" ? "paused" : "focus")
+                }
+                className={`px-6 py-2 rounded-lg font-medium shadow-md transition ${
                   status === "focus"
-                    ? "yellow"
-                    : status === "paused"
-                    ? "green"
-                    : "blue",
-              }}
-            >
-              {status === "focus" && "Pause"}
-              {status === "paused" && "Resume"}
-              {status === "done" && "Done"}
-            </button>
+                    ? "bg-yellow-500 hover:bg-yellow-600"
+                    : "bg-green-500 hover:bg-green-600"
+                }`}
+              >
+                {status === "focus" ? "Pause" : "Resume"}
+              </button>
+            )}
             <button
               onClick={resetTimer}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg"
+              className="px-6 py-2 bg-red-500 rounded-lg font-medium shadow-md hover:bg-red-600 transition"
             >
               Reset
             </button>
@@ -153,10 +158,16 @@ export default function FocusPage() {
         )}
 
         {/* Pet */}
-        <PetDisplay pet={user.pet} />
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 text-center shadow-lg">
+          <PetDisplay pet={user.pet} />
+          <p className="mt-3 text-lg font-semibold">{pet.msg}</p>
+        </div>
 
         {/* Points */}
-        <p className="mt-4 text-lg font-bold">Your points: {user.points}</p>
+        <p className="mt-6 text-xl font-bold">
+          Your points:{" "}
+          <span className="text-yellow-400 drop-shadow-lg">{user.points}</span>
+        </p>
       </div>
     </ProtectedRoute>
   );
