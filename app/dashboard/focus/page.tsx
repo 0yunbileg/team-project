@@ -3,13 +3,16 @@
 import { useEffect, useState, useRef } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import PetDisplay from "@/components/PetDisplay";
 
 export default function FocusPage() {
   const { user, updateUser } = useCurrentUser();
 
   const [minutesInput, setMinutesInput] = useState(25);
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
-  const [status, setStatus] = useState<"idle" | "focus" | "paused" | "done">("idle");
+  const [status, setStatus] = useState<"idle" | "focus" | "paused" | "done">(
+    "idle"
+  );
   const [secondsFocused, setSecondsFocused] = useState(0);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -66,13 +69,25 @@ export default function FocusPage() {
   const petState = () => {
     switch (status) {
       case "focus":
-        return { img: "/images/pet-happy.png", msg: "I’m cheering for you! Stay focused ✨" };
+        return {
+          img: "/images/pet-happy.png",
+          msg: "I’m cheering for you! Stay focused ✨",
+        };
       case "paused":
-        return { img: "/images/pet-sad.png", msg: "Don’t give up! You can do this 💪" };
+        return {
+          img: "/images/pet-sad.png",
+          msg: "Don’t give up! You can do this 💪",
+        };
       case "done":
-        return { img: "/images/pet-excited.png", msg: `You did it! +${Math.floor(secondsFocused/60)} XP 🎉` };
+        return {
+          img: "/images/pet-excited.png",
+          msg: `You did it! +${Math.floor(secondsFocused / 60)} XP 🎉`,
+        };
       default:
-        return { img: "/images/pet-neutral.png", msg: "Ready when you are! 🐾" };
+        return {
+          img: "/images/pet-neutral.png",
+          msg: "Ready when you are! 🐾",
+        };
     }
   };
 
@@ -113,13 +128,15 @@ export default function FocusPage() {
         {status !== "idle" && (
           <div className="mt-4 space-x-4">
             <button
-              onClick={() =>
-                setStatus(status === "focus" ? "paused" : "focus")
-              }
+              onClick={() => setStatus(status === "focus" ? "paused" : "focus")}
               className="px-4 py-2 text-white rounded-lg"
               style={{
                 backgroundColor:
-                  status === "focus" ? "yellow" : status === "paused" ? "green" : "blue",
+                  status === "focus"
+                    ? "yellow"
+                    : status === "paused"
+                    ? "green"
+                    : "blue",
               }}
             >
               {status === "focus" && "Pause"}
@@ -136,10 +153,7 @@ export default function FocusPage() {
         )}
 
         {/* Pet */}
-        <div className="mt-10 flex flex-col items-center transition-all">
-          <img src={pet.img} alt="Pet" className="w-24 h-24 animate-bounce" />
-          <p className="mt-2 text-gray-600 italic">{pet.msg}</p>
-        </div>
+        <PetDisplay pet={user.pet} />
 
         {/* Points */}
         <p className="mt-4 text-lg font-bold">Your points: {user.points}</p>

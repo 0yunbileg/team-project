@@ -6,6 +6,7 @@ import { feedPet, playWithPet, restPet } from "@/hooks/usePetActions";
 import { useEffect, useState } from "react";
 import { usePetManager } from "@/hooks/usePetManager";
 import { User } from "@/types/user";
+import PetDisplay from "@/components/PetDisplay";
 
 export default function PetPage() {
   const { user, updateUser } = useCurrentUser();
@@ -84,6 +85,8 @@ export default function PetPage() {
             Rest (-10 pts)
           </button>
         </div>
+
+        <PetDisplay pet={petUser.pet} />
       </div>
     </ProtectedRoute>
   );
