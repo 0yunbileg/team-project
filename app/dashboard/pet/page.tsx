@@ -3,16 +3,48 @@
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { feedPet, playWithPet, restPet } from "@/hooks/usePetActions";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { usePetManager } from "@/hooks/usePetManager";
+import { User } from "@/types/user";
 
 export default function PetPage() {
   const { user, updateUser } = useCurrentUser();
-  const [petUser, setPetUser] = useState(user); // local copy for re-render
+  const [petUser, setPetUser] = useState<User | null>(user);
 
-  // Sync state when user changes
+  // Sync local state whenever current user updates
   useEffect(() => {
     setPetUser(user);
   }, [user]);
+
+  // Auto-decrease pet stats and update state
+  usePetManager();
+
+  // Helper to refresh petUser from storage after action
+  const refreshUser = () => {
+    if (!user) return;
+    const updated = JSON.parse(
+      localStorage.getItem("pusers:data:v1") || "[]"
+    ).find((u: User) => u.email === user.email);
+    if (updated) setPetUser(updated);
+  };
+
+  const handleFeed = () => {
+    if (!petUser) return;
+    feedPet(petUser.email);
+    refreshUser();
+  };
+
+  const handlePlay = () => {
+    if (!petUser) return;
+    playWithPet(petUser.email);
+    refreshUser();
+  };
+
+  const handleRest = () => {
+    if (!petUser) return;
+    restPet(petUser.email);
+    refreshUser();
+  };
 
   if (!petUser) {
     return (
@@ -21,39 +53,6 @@ export default function PetPage() {
       </ProtectedRoute>
     );
   }
-
-  const handleFeedPet = () => {
-    feedPet(petUser.email);
-    const updated = JSON.parse(
-      localStorage.getItem("pusers:data:v1") || "[]"
-    ).find((u: any) => u.email === petUser.email);
-    if (updated) {
-      setPetUser(updated);
-      updateUser(updated); // update global state
-    }
-  };
-
-  const handlePlayPet = () => {
-    playWithPet(petUser.email);
-    const updated = JSON.parse(
-      localStorage.getItem("pusers:data:v1") || "[]"
-    ).find((u: any) => u.email === petUser.email);
-    if (updated) {
-      setPetUser(updated);
-      updateUser(updated);
-    }
-  };
-
-  const handleRestPet = () => {
-    restPet(petUser.email);
-    const updated = JSON.parse(
-      localStorage.getItem("pusers:data:v1") || "[]"
-    ).find((u: any) => u.email === petUser.email);
-    if (updated) {
-      setPetUser(updated);
-      updateUser(updated);
-    }
-  };
 
   return (
     <ProtectedRoute>
@@ -67,19 +66,19 @@ export default function PetPage() {
           <p>Points: {petUser.points}</p>
 
           <button
-            onClick={handleFeedPet}
+            onClick={handleFeed}
             className="bg-green-500 px-4 py-2 rounded mr-2 mt-2"
           >
             Feed (-10 pts)
           </button>
           <button
-            onClick={handlePlayPet}
+            onClick={handlePlay}
             className="bg-yellow-500 px-4 py-2 rounded mr-2 mt-2"
           >
             Play (-10 pts)
           </button>
           <button
-            onClick={handleRestPet}
+            onClick={handleRest}
             className="bg-blue-500 px-4 py-2 rounded mt-2"
           >
             Rest (-10 pts)

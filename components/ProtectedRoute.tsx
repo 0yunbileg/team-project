@@ -3,6 +3,7 @@
 import { useEffect, useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { usePetManager } from "@/hooks/usePetManager";
+import { getCurrentUser } from "@/lib/storage";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -12,13 +13,13 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
-  usePetManager(); // ✅ always called, top level
+  usePetManager(); // always called at top level
 
   useEffect(() => {
-    const currentUser = localStorage.getItem("currentUser");
+    const currentUser = getCurrentUser(); // ✅ use storage helper
 
     if (!currentUser) {
-      router.push("/auth"); // if not logged in → redirect
+      router.push("/auth"); // redirect if not logged in
     } else {
       setLoading(false); // allow rendering
     }

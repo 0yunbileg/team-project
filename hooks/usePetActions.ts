@@ -1,33 +1,26 @@
-// hooks/usePetActions.ts
 "use client";
 
 import { getUser, updateUser } from "@/lib/storage";
 import { User } from "@/types/user";
 
 function applyPetAction(email: string, action: (user: User) => void) {
-  // Always run on button click, so localStorage is available
   const user = getUser(email);
-  console.log("User before action:", user);
   if (!user) return;
 
   action(user);
   updateUser(user);
-  console.log("User after action:", user);
 }
 
 export function feedPet(email: string) {
-  applyPetAction(email, (user) => {
-    if (user.points < 10) {
-      console.log("Not enough points to feed the pet!");
-      return;
-    }
+  applyPetAction(email, user => {
+    if (user.points < 10) return;
     user.points -= 10;
     user.pet.hunger = Math.min(user.pet.hunger + 20, 100);
   });
 }
 
 export function playWithPet(email: string) {
-  applyPetAction(email, (user) => {
+  applyPetAction(email, user => {
     if (user.points < 10) return;
     user.points -= 10;
     user.pet.happiness = Math.min(user.pet.happiness + 20, 100);
@@ -35,7 +28,7 @@ export function playWithPet(email: string) {
 }
 
 export function restPet(email: string) {
-  applyPetAction(email, (user) => {
+  applyPetAction(email, user => {
     if (user.points < 10) return;
     user.points -= 10;
     user.pet.energy = Math.min(user.pet.energy + 20, 100);

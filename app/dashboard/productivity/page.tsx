@@ -32,11 +32,29 @@ export default function Home() {
     );
   }
 
-  const goalsCompleted = data.goals.filter(
-    (g) => g.progress >= g.target
-  ).length;
+  const goalsCompleted = data.goals.filter((g) => g.progress >= g.target).length;
   const bestStreak = Math.max(0, ...data.habits.map((h) => h.streak));
   const tasksDone = user.tasks.filter((t) => t.completed).length;
+
+  // --- Handler for completing a task ---
+  const handleCompleteTask = (taskId: number) => {
+    const updatedTasks = user.tasks.map((t) => {
+      if (t.id === taskId && !t.completed) {
+        // Task completed for the first time → add points
+        updateUser({ 
+          ...user, 
+          points: user.points + 1, 
+          tasks: user.tasks.map((task) =>
+            task.id === taskId ? { ...task, completed: true } : task
+          )
+        });
+        return { ...t, completed: true };
+      }
+      return t;
+    });
+
+    updateUser({ ...user, tasks: updatedTasks });
+  };
 
   return (
     <div className="min-h-screen px-6 py-8 sm:px-10 sm:py-12 text-foreground">
@@ -73,7 +91,7 @@ export default function Home() {
           <Habits habits={data.habits} />
         </div>
         <div className="lg:col-span-1">
-          <Tasks tasks={user.tasks} />
+          <Tasks tasks={user.tasks} onComplete={handleCompleteTask} />
         </div>
       </div>
     </div>

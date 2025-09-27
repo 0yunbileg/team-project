@@ -2,44 +2,34 @@
 
 import { useEffect, useState } from "react";
 import { User } from "@/types/user";
+import { getCurrentUser, getUser, updateUser as updateUserStorage } from "@/lib/storage";
 
 export function useCurrentUser() {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true); // ✅ add loading state
 
-  // Load user from localStorage
   useEffect(() => {
-    const currentEmail = localStorage.getItem("currentUser");
-    if (!currentEmail) return;
-
-    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    const foundUser = users.find((u) => u.email === currentEmail);
-
-    if (foundUser) {
-      setUser(foundUser);
-    } else {
-      // Invalid session cleanup
-      localStorage.removeItem("currentUser");
-      setUser(null);
+    const email = getCurrentUser();
+    if (!email) {
+      setLoading(false); // no current user
+      return;
     }
+
+    const u = getUser(email);
+    if (u) setUser(u);
+
+    setLoading(false);
   }, []);
 
-  // Save updates back to localStorage
   const updateUser = (updatedUser: User) => {
-    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    const newUsers = users.map((u) =>
-      u.email === updatedUser.email ? updatedUser : u
-    );
-
-    localStorage.setItem("users", JSON.stringify(newUsers));
+    updateUserStorage(updatedUser);
     setUser(updatedUser);
   };
 
-  // Logout user (clear session)
   const logoutUser = () => {
-    localStorage.removeItem("currentUser");
+    localStorage.removeItem("pcurrent:user");
     setUser(null);
-    window.location.href = "/"; // optional redirect
   };
 
-  return { user, updateUser, logoutUser };
+  return { user, loading, updateUser, logoutUser };
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { HeroCard } from "@/components/HeroCard";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { setCurrentUser } from "@/lib/storage";
 
 interface User {
   firstName: string;
@@ -46,21 +47,21 @@ export default function AuthPage() {
       prev.includes(goal) ? prev.filter((g) => g !== goal) : [...prev, goal]
     );
   };
-
+  
   const handleSubmit = () => {
-    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-
+    const users: User[] = JSON.parse(localStorage.getItem("pusers:data:v1") || "[]");
+  
     if (isRegister) {
       if (users.find((u) => u.email === email)) {
         setError("User already exists!");
         return;
       }
-
+  
       const finalJobTitle = jobTitle === "Other" ? customJob : jobTitle;
       const finalGoals = goals.includes("Other")
         ? [...goals.filter((g) => g !== "Other"), customGoal]
         : goals;
-
+  
       const newUser: User = {
         firstName,
         lastName,
@@ -72,23 +73,22 @@ export default function AuthPage() {
         tasks: [],
         pet: { name: petName, hunger: 100, happiness: 100, energy: 100 },
       };
-
+  
       users.push(newUser);
-      localStorage.setItem("users", JSON.stringify(users));
-      localStorage.setItem("currentUser", email);
+      localStorage.setItem("pusers:data:v1", JSON.stringify(users));
+      setCurrentUser(email); // ✅ use helper
       window.location.href = "/dashboard";
     } else {
-      const user = users.find(
-        (u) => u.email === email && u.password === password
-      );
+      const user = users.find(u => u.email === email && u.password === password);
       if (!user) {
         setError("Invalid email or password");
         return;
       }
-      localStorage.setItem("currentUser", email);
+      setCurrentUser(email); // ✅ use helper
       window.location.href = "/dashboard";
     }
   };
+  
 
   return (
     <div className="min-h-screen px-6 py-8 sm:px-10 sm:py-12 text-foreground flex justify-center items-center">

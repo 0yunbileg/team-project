@@ -1,3 +1,5 @@
+import { Task } from "@/types/user";
+
 export type Goal = {
   id: string;
   title: string;
@@ -10,14 +12,6 @@ export type Habit = {
   title: string;
   streak: number; // current streak in days
   history: Record<string, boolean>; // ISO date -> done
-};
-
-export type Task = {
-  id: string;
-  title: string;
-  due?: string; // ISO date
-  priority: "low" | "medium" | "high";
-  completed: boolean;
 };
 
 export type DashboardData = {
