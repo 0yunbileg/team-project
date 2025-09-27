@@ -1,32 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-export interface Task {
-  id: number;
-  title: string;
-  completed: boolean;
-  priority: string;
-}
-
-export interface Pet {
-  name: string;
-  hunger: number;
-  happiness: number;
-  energy: number;
-}
-
-export interface User {
-  firstName: string;
-  lastName: string;
-  email: string;
-  jobTitle: string;
-  goals: string[];
-  password: string;
-  points: number;
-  tasks: Task[];
-  pet: Pet;
-}
+import { User } from "@/types/user";
 
 export function useCurrentUser() {
   const [user, setUser] = useState<User | null>(null);
@@ -41,6 +16,10 @@ export function useCurrentUser() {
 
     if (foundUser) {
       setUser(foundUser);
+    } else {
+      // Invalid session cleanup
+      localStorage.removeItem("currentUser");
+      setUser(null);
     }
   }, []);
 
@@ -50,9 +29,17 @@ export function useCurrentUser() {
     const newUsers = users.map((u) =>
       u.email === updatedUser.email ? updatedUser : u
     );
+
     localStorage.setItem("users", JSON.stringify(newUsers));
     setUser(updatedUser);
   };
 
-  return { user, updateUser };
+  // Logout user (clear session)
+  const logoutUser = () => {
+    localStorage.removeItem("currentUser");
+    setUser(null);
+    window.location.href = "/"; // optional redirect
+  };
+
+  return { user, updateUser, logoutUser };
 }

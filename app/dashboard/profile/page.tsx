@@ -4,7 +4,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 export default function ProfilePage() {
-  const { user, updateUser } = useCurrentUser();
+  const { user, updateUser, logoutUser } = useCurrentUser();
 
   if (!user) {
     return (
@@ -18,11 +18,6 @@ export default function ProfilePage() {
     updateUser({ ...user, points: user.points + n });
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("currentUser");
-    window.location.href = "/";
-  };
-
   console.log("Rendering ProfilePage with user:", user);
   return (
     <ProtectedRoute>
@@ -33,7 +28,7 @@ export default function ProfilePage() {
             Welcome, {user.firstName} {user.lastName} 🎉
           </h1>
           <button
-            onClick={handleLogout}
+            onClick={logoutUser}
             className="mt-4 md:mt-0 bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition"
           >
             Logout
