@@ -1,33 +1,6 @@
 {
   "pages": {
-    "/_app": [
-      "static/chunks/f92ad_next_dist_compiled_next-devtools_index_31f57711.js",
-      "static/chunks/f92ad_next_dist_compiled_65b59c87._.js",
-      "static/chunks/f92ad_next_dist_shared_lib_b2febc95._.js",
-      "static/chunks/f92ad_next_dist_client_65953dc7._.js",
-      "static/chunks/f92ad_next_dist_9b1e866d._.js",
-      "static/chunks/f92ad_next_app_165b5820.js",
-      "static/chunks/[next]_entry_page-loader_ts_6be1e895._.js",
-      "static/chunks/f92ad_react-dom_c8037cda._.js",
-      "static/chunks/f92ad_a2ade1f7._.js",
-      "static/chunks/[root-of-the-server]__b1854714._.js",
-      "static/chunks/ERXES_projects_react_team-project_pages__app_2da965e7._.js",
-      "static/chunks/turbopack-ERXES_projects_react_team-project_pages__app_125d82c1._.js"
-    ],
-    "/_error": [
-      "static/chunks/f92ad_next_dist_compiled_next-devtools_index_31f57711.js",
-      "static/chunks/f92ad_next_dist_compiled_65b59c87._.js",
-      "static/chunks/f92ad_next_dist_shared_lib_49a2ddd5._.js",
-      "static/chunks/f92ad_next_dist_client_65953dc7._.js",
-      "static/chunks/f92ad_next_dist_7e3688fa._.js",
-      "static/chunks/f92ad_next_error_04944dee.js",
-      "static/chunks/[next]_entry_page-loader_ts_2976b706._.js",
-      "static/chunks/f92ad_react-dom_c8037cda._.js",
-      "static/chunks/f92ad_a2ade1f7._.js",
-      "static/chunks/[root-of-the-server]__fdb9266f._.js",
-      "static/chunks/ERXES_projects_react_team-project_pages__error_2da965e7._.js",
-      "static/chunks/turbopack-ERXES_projects_react_team-project_pages__error_58ebab97._.js"
-    ]
+    "/_app": []
   },
   "devFiles": [],
   "ampDevFiles": [],

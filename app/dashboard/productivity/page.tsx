@@ -1,28 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { KPICards } from "@/components/dashboard/KPICards";
-import { Goals } from "@/components/dashboard/Goals";
-import { Habits } from "@/components/dashboard/Habits";
 import { Tasks } from "@/components/dashboard/Tasks";
-import { Charts } from "@/components/dashboard/Charts";
-import { DashboardData } from "@/lib/types";
-import { loadData } from "@/lib/storage";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
-export default function Home() {
-  const [data, setData] = useState<DashboardData>({
-    goals: [],
-    habits: [],
-    tasks: [],
-  });
-  const { user, updateUser } = useCurrentUser();
-
-  useEffect(() => {
-    setData(loadData());
-  }, []);
+export default function ProductivityPage() {
+  const { user } = useCurrentUser();
 
   if (!user) {
     return (
@@ -32,68 +15,20 @@ export default function Home() {
     );
   }
 
-  const goalsCompleted = data.goals.filter((g) => g.progress >= g.target).length;
-  const bestStreak = Math.max(0, ...data.habits.map((h) => h.streak));
-  const tasksDone = user.tasks.filter((t) => t.completed).length;
-
-  // --- Handler for completing a task ---
-  const handleCompleteTask = (taskId: number) => {
-    const updatedTasks = user.tasks.map((t) => {
-      if (t.id === taskId && !t.completed) {
-        // Task completed for the first time → add points
-        updateUser({ 
-          ...user, 
-          points: user.points + 1, 
-          tasks: user.tasks.map((task) =>
-            task.id === taskId ? { ...task, completed: true } : task
-          )
-        });
-        return { ...t, completed: true };
-      }
-      return t;
-    });
-
-    updateUser({ ...user, tasks: updatedTasks });
-  };
-
   return (
-    <div className="min-h-screen px-6 py-8 sm:px-10 sm:py-12 text-foreground">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold gradient-text">
+    <ProtectedRoute>
+      <div className="min-h-screen px-6 py-8 sm:px-10 sm:py-12 text-foreground">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-semibold gradient-text">
             Productivity Dashboard
           </h1>
-          <p className="text-sm text-black/60 dark:text-white/60">
-            Track goals, habits, and tasks
-          </p>
+          <div className="text-lg font-medium">Points: {user.points}</div>
         </div>
-        <ThemeToggle />
-      </div>
 
-      <div className="mt-6">
-        <KPICards
-          goalsCompleted={goalsCompleted}
-          currentStreak={bestStreak}
-          tasksDone={tasksDone}
-        />
-      </div>
-
-      <div className="mt-6">
-        <Charts />
-      </div>
-
-      <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-1">
-          <Goals goals={data.goals} />
-        </div>
-        <div className="lg:col-span-1">
-          <Habits habits={data.habits} />
-        </div>
-        <div className="lg:col-span-1">
-          <Tasks tasks={user.tasks} onComplete={handleCompleteTask} />
+        <div className="grid grid-cols-1 gap-4">
+          <Tasks />
         </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }
